@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">20_18071591_PhamAnhTuan</string>
+    <string name="channel_name">Channel 1</string>
+    <string name="channel_description">This is channel 1</string>
 </resources>

@@ -1,13 +1,19 @@
 package com.example.a20_18071591_phamanhtuan;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -31,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private int totalTime = 0;
     TextView txtTotalTime;
     TextView txtProgress;
+    Boolean flag = true;
 
     private ProgressBar progressB;
     @Override
@@ -55,6 +62,28 @@ public class MainActivity extends AppCompatActivity {
         connectService();
         // progress
         progressB = findViewById(R.id.progressB);
+    }
+
+    private void sendNotificationMedia() {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_nhac);
+        MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(this,"tag");
+        Notification notification = new NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_smaill_music)
+                .setSubText("AnhTuanIT")
+                .setContentTitle("Over Hit")
+                .setContentText("Game trailer audio")
+                .setLargeIcon(bitmap)
+                .addAction(R.drawable.previous, "Previous", null)
+                .addAction(R.drawable.pause, "Pause", null)
+                .addAction(R.drawable.next, "Next", null)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(1)
+                        .setMediaSession(mediaSessionCompat.getSessionToken()))
+                .build();
+
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
+        managerCompat.notify(1,notification);
+
     }
 
     private void connectService() {
@@ -97,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
                         totalTime = totalTime = myService.getMp().getDuration();
                         txtProgress.post(mUpdateTime);
                         progressB.post(mUpdateProgress);
+                    }
+                    if(flag) {
+                        flag = false;
+                        sendNotificationMedia();
                     }
                 } else {
                     myService.stopMusic();

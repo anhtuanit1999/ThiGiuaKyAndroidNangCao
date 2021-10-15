@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         imgLoa.startAnimation(animation);
         initView();
         connectService();
-
+        // progress
         progressB = findViewById(R.id.progressB);
     }
 
